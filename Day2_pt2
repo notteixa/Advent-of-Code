@@ -1,0 +1,68 @@
+package com.mycompany.day2_pt2;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+
+
+public class Day2_pt2 {
+
+
+    public static void main(String[] args) throws FileNotFoundException {
+            
+    //Indicar o caminho do ficheiro 
+    File file= new File("C:\\Users\\Rui Teixeira\\Desktop\\Estágio\\Advent of Code\\Day 2\\day2.txt");
+             
+    //Scanner serve para ler o que esta no ficheiro
+    Scanner scann= new Scanner(file);
+            
+            //Definir o tamanho da String
+            String[] inst= new String[1000];
+            int profundidade = 0;
+            int horizontal = 0;
+            int aim = 0;
+            int i=0;
+           
+   
+    //Este ciclo consiste em ler o ficheiro até  ao final
+    while (scann.hasNextLine()){                
+               
+        inst[i]= scann.nextLine();
+        i+=1;
+    
+    }
+
+    //Fazer um for até a posição 1000 para ler todo o ficheiro
+      for (i = 0; i < 1000; i++) {
+          char[] chars = inst[i].toCharArray();
+            //fazer os calculos para o "Forward"  
+            if (inst[i].contains("forward")){
+                for(char c : chars){
+                  if(Character.isDigit(c)){  
+                     horizontal += Character.getNumericValue(c);
+                     profundidade += aim * Character.getNumericValue(c);
+                  }
+                }
+            }
+            //fazer os calculos para o "Down"
+            if (inst[i].contains("down")){
+                for(char c : chars){
+                  if(Character.isDigit(c)){
+                     aim +=  Character.getNumericValue(c);
+                  }
+                }  
+             }
+            //fazer os calculos para o "UP"
+            if (inst[i].contains("up")){
+                for(char c : chars){
+                  if(Character.isDigit(c)){
+                     aim -=Character.getNumericValue(c);
+                  } 
+                }
+             }
+       }
+       //Imprimir na tela o resultado final      
+       System.out.println(horizontal*profundidade);
+}
+}
