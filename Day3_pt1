@@ -1,0 +1,71 @@
+package com.mycompany.day3_pt1;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+
+public class Day3_pt1 {
+
+    public static void main(String[] args) throws FileNotFoundException {
+        //Indicar o caminho do ficheiro
+        File file= new File("C:\\Users\\Rui Teixeira\\Desktop\\Estágio\\Advent of Code\\Day 3\\day3.txt");
+       //Este Scanner serve para ler o conteudo do ficheiro
+            Scanner scann= new Scanner(file);
+         
+            //Criação de 3 "Arrays"
+            String[] inst= new String[1000];
+            int[] n1 = new int[12];
+            int[] n2 = new int[12];
+            
+            //Criação de 2 variáveis
+            int i= 0;
+            int x;
+           
+            //Ciclo while para introdução dos dados do ficheiro na posição correspondente
+            while (scann.hasNextLine()){
+               
+                inst[i]= scann.nextLine();
+                i+=1;
+            }
+
+            //Ciclo para percorrer o Array com os dados do nosso ficheiro "(linha 12)"
+            for (i = 0; i < 1000; i++){
+           
+                for (x = 0; x < 12; x++){
+                char[] chars = inst[i].toCharArray();
+                     char c = chars[x];            
+                        if(Character.getNumericValue(c)==1){
+                            n1[x] +=1;
+                        }else{
+                            n1[x] -=1;
+                        }
+               }              
+            }
+            
+     //Criação de variáveis para o resultado final e para guardar valores do "N1" e "N2"
+     String valor1 ="";
+     String valor2 ="";
+     int fim;
+     
+    
+     for(x = 0; x < 12; x++){
+         if(n1[x]>=1){
+            n1[x]=1;
+            n2[x]=0;
+         }else{
+            n1[x]=0;
+            n2[x]=1;
+         }
+
+         valor1 += n1[x];
+         valor2 += n2[x];
+         
+     }
+
+     //Efetua o cálculo e representa o resultado obtido
+     fim =Integer.parseInt(valor1,2)*Integer.parseInt(valor2,2);
+     System.out.print(fim);
+
+    }
+}
