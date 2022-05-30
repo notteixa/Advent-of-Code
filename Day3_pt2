@@ -1,0 +1,103 @@
+package com.mycompany.day3_pt2;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Day3_pt2 {
+    
+    public static String getValue(List<String> valor1, String selecionarM, boolean Manter) {
+        
+        int coluna = 0;
+
+        while (valor1.size() > 1) {
+            
+            int positivo = 0;
+            int negativo = 0;
+
+            for (String linha : valor1) {
+                String[] lineArr = linha.split("");
+                String X = lineArr[coluna];
+                if (X.equals("1")) {
+                    positivo ++;
+                } else {
+                    negativo ++;
+                }
+            }
+
+            String binarios = selecionarM;
+
+            if (positivo > negativo) {
+                if (Manter) {
+                    binarios = "1";
+                } else {
+                    binarios = "0";
+                }
+            } else if (positivo < negativo) {
+                if (Manter) {
+                    binarios = "0";
+                } else {
+                    binarios = "1";
+                }
+            }
+
+            List <String> listaSeguinte = new ArrayList<>();
+
+              for (String linha : valor1) {
+                String[] lineArr = linha.split("");
+                String val = lineArr[coluna];
+                if (val.equals(binarios)) {
+                    listaSeguinte.add(linha);
+                }
+            }
+            valor1 = listaSeguinte;
+            coluna++;
+        }
+
+        return valor1.get(0);
+    }
+
+    public static void main(String[] args) {
+        
+        //ler o ficheiro até ao seu fim
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Rui Teixeira\\Desktop\\Estágio\\Advent of Code\\Day 3\\day3_fich.txt"));
+
+            List<String> valor2 = new ArrayList<>();
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                valor2.add(line);
+            }
+            
+            //Verificar se o valor selecionado é "0" ou "1"
+            String GeradorOxi = getValue(valor2, "1", true);
+            String PurificadorCO2 = getValue(valor2, "0", false);
+
+            BigInteger GeradorOxiNumber = new BigInteger(GeradorOxi, 2);
+            BigInteger PurificadorCO2Number = new BigInteger(PurificadorCO2, 2);
+            
+            
+            System.out.print("1 Valor em binario: ");
+            System.out.println(GeradorOxi);
+            System.out.print("1 Valor em decimal: ");
+            System.out.println(GeradorOxiNumber);
+            System.out.print("2 Valor em binario: ");
+            System.out.println(PurificadorCO2);
+            System.out.print("2 Valor em decimal: ");
+            System.out.println(PurificadorCO2Number);
+            System.out.println("  ");
+            System.out.print("Resultado Final: ");
+            System.out.println(GeradorOxiNumber.intValue() * PurificadorCO2Number.intValue());
+            System.out.println("  ");
+               
+        //Inicializa uma String como se o seu resultado fosse "0"
+        //O catch vai apenas buscar uma parte do código no "Try"
+        } catch (IOException e) {
+        }
+    }
+    
+}
