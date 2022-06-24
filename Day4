@@ -1,0 +1,145 @@
+package com.mycompany.teste;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class Teste {
+
+    public static void main(String[] args) throws IOException {
+
+        List<String> linhas = Files.readAllLines(Paths.get("C:\\Users\\Rui Teixeira\\Desktop\\Estágio\\Advent of Code\\Day 4\\day4_1.txt"));
+        var NumerosBingo = Arrays.stream(linhas.get(0).split(",")).mapToInt(Integer::parseInt).boxed().collect(Collectors.toList());
+        
+        List<Bilhete> BilheteParte1 = Bilhete.CriarBilhetes(linhas);
+        
+        System.out.println("Parte 1: " + taskSolve(NumerosBingo, BilheteParte1, false));
+        
+        List<Bilhete> BilheteParte2 = Bilhete.CriarBilhetes(linhas);
+        
+        System.out.println("Parte 2: " + taskSolve(NumerosBingo, BilheteParte2, true));
+    }
+
+    private static int taskSolve(List<Integer> bingoNumbers, List<Bilhete> BilhetesBingo, boolean parte2) {
+        LinkedHashMap<Integer, Integer> MemoriaVencedores = new LinkedHashMap<>();
+        for (int Atual = 0; Atual < bingoNumbers.size(); Atual++) {
+            for (Bilhete bingoTicket : BilhetesBingo) {
+                for (int linha = 0; linha < 5; linha++) {
+                    for (int column = 0; column < 5; column++) {
+                        if (bingoTicket.NaoMarcados()[linha][column].equals(bingoNumbers.get(Atual))) {
+                            bingoTicket.Marcados()[linha][column] = true;
+                        }
+                    }
+                }
+            }
+            for (int i = 0, bingoTicketsSize = BilhetesBingo.size(); i < bingoTicketsSize; i++) {
+                Bilhete bingoTicket = BilhetesBingo.get(i);
+                if (bingoTicket.Ganhou(true, bingoTicket.marked)) {
+                    if (parte2) {
+                        if (MemoriaVencedores.get(i) == null) {
+                            MemoriaVencedores.put(i, bingoNumbers.get(Atual) * bingoTicket.SomaNaoMarcados());
+                        }
+                    } else {
+                        return bingoNumbers.get(Atual) * bingoTicket.SomaNaoMarcados();
+                    }
+                }
+            }
+        }
+
+        var recordOpt = MemoriaVencedores.entrySet().stream().reduce((primeiro, segundo) -> segundo);
+        if (recordOpt != null) {
+            return recordOpt.get().getValue();
+        } else return 0;
+    }
+
+        static class Bilhete {
+        private final Integer[][] fields;
+        private Boolean[][] marked;
+
+        public Integer[][] NaoMarcados() {
+            return fields;
+        }
+
+        public Boolean[][] Marcados() {
+            return marked;
+        }
+
+        public Bilhete(Integer[][] fields, Boolean[][] marked) {
+            this.fields = fields;
+            this.marked = marked;
+        }
+
+        public static List<Bilhete> CriarBilhetes(List<String> inputIntegers) {
+            List<Bilhete> list = new ArrayList<>();
+            for (int i = 2; i < inputIntegers.size(); i++) {
+                if (inputIntegers.get(i).isEmpty()) {
+                } else {
+                    Integer[][] fields = new Integer[5][5];
+                    Boolean[][] marked = new Boolean[5][5];
+                    for (int linhas = 0; linhas < 5; linhas++) {
+                        var numeros = Arrays
+                                .stream(inputIntegers.get(i + linhas).split(" "))
+                                .filter(e -> !e.isEmpty())
+                                .collect(Collectors.toList())
+                                .toArray(new String[5]);
+
+                        for (int colunas = 0; colunas < 5; colunas++) {
+                            fields[linhas][colunas] = Integer.parseInt(numeros[colunas]);
+                            marked[linhas][colunas] = false;
+                        }
+                    }
+                    list.add(new Bilhete(fields, marked));
+                    i +=5;
+                }
+            }
+            return list;
+        }
+
+        public boolean Ganhou(boolean transpose, Boolean[][] A) {
+            boolean vencedor = true;
+            for (int i = 0; i < 5; i++) {
+                vencedor = true;
+                for (int j = 0; j < 5; j++) {
+                    if (!A[i][j]) {
+                        vencedor = false;
+                        break;
+                    }
+                }
+                if (vencedor) {
+                    return true;
+                }
+            }
+            if (transpose) {
+                return Ganhou(false, transpose(A));
+            }
+
+            return vencedor;
+        }
+
+        public static Boolean[][] transpose(Boolean[][] T) {
+            Boolean[][] X = new Boolean[5][5];
+            for (int i = 0; i < 5; i++)
+                for (int j = 0; j < 5; j++)
+                    X[j][i] = T[i][j];
+            return X;
+        }
+
+        public int SomaNaoMarcados() {
+            int soma = 0;
+            for (int linhas = 0; linhas < 5; linhas++) {
+                for (int colunas = 0; colunas < 5; colunas++) {
+                    if (!marked[linhas][colunas]) {
+                        soma += fields[linhas][colunas];
+                    }
+                }
+            }
+            return soma;
+        }
+    }
+
+}
